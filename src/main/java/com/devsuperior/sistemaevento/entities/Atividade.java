@@ -2,6 +2,11 @@ package com.devsuperior.sistemaevento.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name = "tb_Atividade")
 public class Atividade {
@@ -10,6 +15,8 @@ public class Atividade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+
+    @Column(columnDefinition = "TEXT")
     private String descricao;
     private Double preco;
 
@@ -17,13 +24,25 @@ public class Atividade {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
+    @OneToMany(mappedBy = "atividade")
+    private List<Bloco> blocos = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "tb_atividade_participante",
+            joinColumns = @JoinColumn(name = "atividade_id"),
+            inverseJoinColumns = @JoinColumn(name = "participante_id"))
+    private Set<Participante> participantes = new HashSet<>();
+
     public Atividade() {
     }
-    public Atividade(Integer id, String name, String descricao, Double preco) {
+
+    public Atividade(Integer id, String name, String descricao, Double preco, Categoria categoria, List<Bloco> blocos) {
         this.id = id;
         this.name = name;
         this.descricao = descricao;
         this.preco = preco;
+        this.categoria = categoria;
+        this.blocos = blocos;
     }
 
     public Integer getId() {
@@ -57,6 +76,20 @@ public class Atividade {
     public void setPreco(Double preco) {
         this.preco = preco;
     }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public List<Bloco> getBlocos() {
+        return blocos;
+    }
+
+    public Set<Participante> getParticipantes() {
+        return participantes;
+    }
 }
-
-
